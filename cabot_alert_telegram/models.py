@@ -44,16 +44,17 @@ class TelegramAlert(AlertPlugin):
             'jenkins_api': settings.JENKINS_API,
         })
         message = Template(telegram_template).render(c)
-        self._send_telegram_alert(message, service)
+        self._send_telegram_alert(users, message, service)
 
-    def _send_telegram_alert(self, message, service):
-
+    def _send_telegram_alert(self, users, message, service):
         telegram_token = env.get('TELEGRAM_BOT_TOKEN')
-        chat_id = env.get('TELEGRAM_CHAT_ID')
+        #chat_id = env.get('TELEGRAM_CHAT_ID')
 
         tb = telebot.TeleBot(telegram_token)
-        tb.send_message(chat_id, message)
 
+        for user in users:
+            if user.telegram_id and not user.telegram_id.isspace():
+                tb.send_message(user.telegram_id, message)
 
 class TelegramAlertUserData(AlertPluginUserData):
     name = "Telegram Plugin"
