@@ -48,9 +48,12 @@ class TelegramAlert(AlertPlugin):
 
     def _send_telegram_alert(self, users, message, service):
         telegram_token = env.get('TELEGRAM_BOT_TOKEN')
-        #chat_id = env.get('TELEGRAM_CHAT_ID')
+        chat_id = env.get('TELEGRAM_CHAT_ID')
 
         tb = telebot.TeleBot(telegram_token)
+
+        if chat_id and not chat_id.isspace():
+            tb.send_message(chat_id, message)
 
         for user in users:
             if user.telegram_id and not user.telegram_id.isspace():
